@@ -14,9 +14,11 @@ class _pageState extends State<page> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        elevation: 0,
+      ),
       body: SafeArea(
-        child: Center(child: Text("CONGRATULATİONS!!!")),
+        child: Center(child: Text("CONGRATULATIONS!!!")),
       ),
     );
   }
