@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:flutter_individual/signIn.dart';
 import 'package:flutter_individual/signUp.dart';
 
 import 'main.dart';
