@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_individual/auth.dart';
 import 'package:flutter_individual/home.dart';
 import 'package:flutter_individual/login.dart';
 
@@ -19,6 +20,7 @@ class _signUpState extends State<signUp> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  AuthService _authService = AuthService();
 
   bool _success = false;
   String _message = "";
@@ -148,8 +150,15 @@ class _signUpState extends State<signUp> {
                       height: 60,
                       onPressed: () {
                         _formKey.currentState?.validate();
+                        _authService
+                            .signUp(
+                                _emailController.text, _passwordController.text)
+                            .then((value) {
+                          return Navigator.push(context,
+                              MaterialPageRoute(builder: (context) => Login()));
+                        });
 
-                        _register();
+                        // _register();
                       },
                       color: Colors.white,
                       shape: RoundedRectangleBorder(
@@ -207,29 +216,29 @@ class _signUpState extends State<signUp> {
     );
   }
 
-  void _register() async {
-    try {
-      final UserCredential userCredential =
-          await auth.createUserWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
-      );
+  // void _register() async {
+  //   try {
+  //     final UserCredential userCredential =
+  //         await auth.createUserWithEmailAndPassword(
+  //       email: _emailController.text,
+  //       password: _passwordController.text,
+  //     );
 
-      final User user = userCredential.user!;
+  //     final User user = userCredential.user!;
 
-      if (user != null) {
-        setState(() {
-          _message = "Merhaba, ${user.email}";
-          _success = true;
-        });
-      }
-    } on FirebaseAuthException catch (e) {
-      setState(() {
-        _message = e.message!;
-        _success = false;
-      });
-    } catch (err) {
-      print(err.toString());
-    }
-  }
+  // if (user != null) {
+  //   setState(() {
+  //     _message = "Merhaba, ${user.email}";
+  //     _success = true;
+  //   });
+  // }
+  //   } on FirebaseAuthException catch (e) {
+  //     setState(() {
+  //       _message = e.message!;
+  //       _success = false;
+  //     });
+  //   } catch (err) {
+  //     print(err.toString());
+  //   }
+  // }
 }

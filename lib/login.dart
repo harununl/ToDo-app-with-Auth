@@ -1,13 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_individual/auth.dart';
 
 import 'package:flutter_individual/signUp.dart';
 import 'package:flutter_individual/home.dart';
 import 'package:flutter_individual/page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
-final FirebaseAuth _auth = FirebaseAuth.instance;
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -17,9 +16,12 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  // final FirebaseAuth _auth = FirebaseAuth.instance;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  AuthService _authService = AuthService();
+  _LoginState login = _LoginState();
   bool isChecked = false;
   bool passwordVisible = false;
   @override
@@ -69,7 +71,7 @@ class _LoginState extends State<Login> {
                           color: Colors.white, fontWeight: FontWeight.bold)),
                   validator: (val) {
                     if (val == null || val.isEmpty) {
-                      return "Please type a Email";
+                      return "Please type an Email";
                     }
                     return null;
                   },
@@ -153,8 +155,22 @@ class _LoginState extends State<Login> {
                   height: 60,
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
-                      signIn();
-                      //Navigator.pushNamed(context, '/page');
+                      _authService
+                          .signIn(
+                              _emailController.text, _passwordController.text)
+                          .then((value) {
+                        return Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => page()));
+                      });
+                      try {
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(SnackBar(content: Text('Hoşgeldin')));
+                      } on FirebaseAuthException catch (e) {
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(SnackBar(content: Text(e.code)));
+                      } catch (e) {
+                        print(e.toString());
+                      }
                     }
                   },
                   color: Colors.white,
@@ -245,22 +261,22 @@ class _LoginState extends State<Login> {
     );
   }
 
-  void signIn() async {
-    try {
-      final UserCredential userCredential =
-          await _auth.signInWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
-      );
+  // void signIn(String mail, String password) async {
+  //   try {
+  //     final UserCredential userCredential =
+  //         await _auth.signInWithEmailAndPassword(
+  //       email: _emailController.text,
+  //       password: _passwordController.text,
+  //     );
 
-      final User user = userCredential.user!;
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Hoşgeldin, ${user.email}')));
-    } on FirebaseAuthException catch (e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(e.code)));
-    } catch (e) {
-      print(e.toString());
-    }
-  }
+  //     final User user = userCredential.user!;
+  // ScaffoldMessenger.of(context)
+  //      .showSnackBar(SnackBar(content: Text('Hoşgeldin, ${user.email}')));
+  //   } on FirebaseAuthException catch (e) {
+  //     ScaffoldMessenger.of(context)
+  //         .showSnackBar(SnackBar(content: Text(e.code)));
+  //   } catch (e) {
+  //     print(e.toString());
+  //   }
+  // }
 }
