@@ -21,7 +21,7 @@ class _LoginState extends State<Login> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   AuthService _authService = AuthService();
-  _LoginState login = _LoginState();
+  //_LoginState login = _LoginState();
   bool isChecked = false;
   bool passwordVisible = false;
   @override
@@ -162,15 +162,6 @@ class _LoginState extends State<Login> {
                         return Navigator.push(context,
                             MaterialPageRoute(builder: (context) => page()));
                       });
-                      try {
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(SnackBar(content: Text('Hoşgeldin')));
-                      } on FirebaseAuthException catch (e) {
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(SnackBar(content: Text(e.code)));
-                      } catch (e) {
-                        print(e.toString());
-                      }
                     }
                   },
                   color: Colors.white,
