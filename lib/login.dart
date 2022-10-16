@@ -16,7 +16,7 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  // final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -155,13 +155,19 @@ class _LoginState extends State<Login> {
                   height: 60,
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
-                      _authService
-                          .signIn(
-                              _emailController.text, _passwordController.text)
-                          .then((value) {
-                        return Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => page()));
-                      });
+                      dynamic result = await signIn(
+                          _emailController.text, _passwordController.text);
+
+                      if (result != null) {
+                        setState(() {
+                          Navigator.pushReplacement<void, void>(
+                            context,
+                            MaterialPageRoute<void>(
+                              builder: (BuildContext context) => const page(),
+                            ),
+                          );
+                        });
+                      }
                     }
                   },
                   color: Colors.white,
@@ -252,6 +258,22 @@ class _LoginState extends State<Login> {
     );
   }
 
+  Future signIn(String email, String password) async {
+    try {
+      final user = await _auth.signInWithEmailAndPassword(
+          email: email, password: password);
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Başarıyla giriş yaptınız..')));
+      return user.user!;
+      //final User user = userCredential.user!;
+    } on FirebaseAuthException catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(e.code)));
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
   // void signIn(String mail, String password) async {
   //   try {
   //     final UserCredential userCredential =
@@ -263,11 +285,11 @@ class _LoginState extends State<Login> {
   //     final User user = userCredential.user!;
   // ScaffoldMessenger.of(context)
   //      .showSnackBar(SnackBar(content: Text('Hoşgeldin, ${user.email}')));
-  //   } on FirebaseAuthException catch (e) {
-  //     ScaffoldMessenger.of(context)
-  //         .showSnackBar(SnackBar(content: Text(e.code)));
-  //   } catch (e) {
-  //     print(e.toString());
-  //   }
+  // } on FirebaseAuthException catch (e) {
+  //   ScaffoldMessenger.of(context)
+  //       .showSnackBar(SnackBar(content: Text(e.code)));
+  // } catch (e) {
+  //   print(e.toString());
+  // }
   // }
 }

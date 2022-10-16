@@ -22,6 +22,9 @@ class _homeState extends State<home> {
           child: Center(
             child: Column(
               children: <Widget>[
+                SizedBox(
+                  height: 20,
+                ),
                 Text(
                   "Hello There!",
                   style: TextStyle(
@@ -52,6 +55,7 @@ class _homeState extends State<home> {
                   height: 60,
                   onPressed: () {
                     Navigator.pushNamed(context, '/login');
+                    //Navigator.pop(context, '/');
                   },
                   color: Colors.white,
                   shape: RoundedRectangleBorder(

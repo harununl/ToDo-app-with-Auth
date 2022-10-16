@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_individual/auth.dart';
+import 'package:flutter_individual/home.dart';
 import 'main.dart';
 import 'package:flutter_individual/login.dart';
 import 'package:flutter_individual/signUp.dart';
@@ -23,6 +24,12 @@ class _pageState extends State<page> {
             onTap: () {
               setState(() {
                 _authService.signOut();
+                Navigator.pushReplacement<void, void>(
+                  context,
+                  MaterialPageRoute<void>(
+                    builder: (BuildContext context) => const home(),
+                  ),
+                );
               });
             },
             child: Icon(Icons.exit_to_app),

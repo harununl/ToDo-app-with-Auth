@@ -20,10 +20,15 @@ class AuthService {
   }
 
 //register
-  Future<User> signUp(String email, String password) async {
-    final user = await _auth.createUserWithEmailAndPassword(
-        email: email, password: password);
+  Future<User?> signUp(String email, String password) async {
+    try {
+      final user = await _auth.createUserWithEmailAndPassword(
+          email: email, password: password);
 
-    return user.user!;
+      return user.user!;
+    } catch (e) {
+      print(e.toString());
+      return null;
+    }
   }
 }

@@ -16,7 +16,7 @@ class signUp extends StatefulWidget {
 }
 
 class _signUpState extends State<signUp> {
-  final FirebaseAuth auth = FirebaseAuth.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -148,15 +148,22 @@ class _signUpState extends State<signUp> {
                     child: MaterialButton(
                       minWidth: double.infinity,
                       height: 60,
-                      onPressed: () {
+                      onPressed: () async {
                         _formKey.currentState?.validate();
-                        _authService
-                            .signUp(
-                                _emailController.text, _passwordController.text)
-                            .then((value) {
-                          return Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => Login()));
-                        });
+                        dynamic result = await signUp(
+                            _emailController.text, _passwordController.text);
+
+                        if (result != null) {
+                          setState(() {
+                            Navigator.pushReplacement<void, void>(
+                              context,
+                              MaterialPageRoute<void>(
+                                builder: (BuildContext context) =>
+                                    const Login(),
+                              ),
+                            );
+                          });
+                        }
 
                         // _register();
                       },
@@ -214,6 +221,21 @@ class _signUpState extends State<signUp> {
         ),
       ),
     );
+  }
+
+  Future<User?> signUp(String email, String password) async {
+    try {
+      final user = await _auth.createUserWithEmailAndPassword(
+          email: email, password: password);
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Başarıyla Kayıt oldunuz..')));
+      return user.user!;
+    } on FirebaseAuthException catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(e.code)));
+    } catch (e) {
+      print(e.toString());
+    }
   }
 
   // void _register() async {
