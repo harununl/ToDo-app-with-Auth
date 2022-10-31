@@ -1,8 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_individual/auth.dart';
-
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_individual/signUp.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_individual/home.dart';
 import 'package:flutter_individual/page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -27,15 +28,16 @@ class _LoginState extends State<Login> {
   @override
   void initState() {
     // TODO: implement initState
-    passwordVisible = false;
+    passwordVisible = true;
   }
 
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
+        backgroundColor: Colors.grey[800],
       ),
-      backgroundColor: Colors.blue,
+      backgroundColor: Colors.grey[600],
       body: Padding(
         padding: EdgeInsets.fromLTRB(30.0, 40.0, 30.0, 0.0),
         child: Form(
@@ -131,7 +133,7 @@ class _LoginState extends State<Login> {
                 children: <Widget>[
                   Checkbox(
                       activeColor: Colors.white,
-                      checkColor: Colors.blue,
+                      checkColor: Colors.grey[800],
                       value: isChecked,
                       onChanged: (bool? value) {
                         setState(() {
@@ -170,7 +172,7 @@ class _LoginState extends State<Login> {
                       }
                     }
                   },
-                  color: Colors.white,
+                  color: Colors.grey[800],
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(40)),
                   child: Text(
@@ -178,7 +180,7 @@ class _LoginState extends State<Login> {
                     style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 16,
-                        color: Colors.blue),
+                        color: Colors.white),
                   ),
                 ),
               ),
@@ -209,16 +211,35 @@ class _LoginState extends State<Login> {
                   Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: FloatingActionButton(
-                      backgroundColor: Colors.white,
+                      backgroundColor: Colors.grey[800],
                       foregroundColor: Colors.blue,
-                      onPressed: () {},
+                      onPressed: () {
+                        //signInWithFacebook();
+                      },
                       child: Icon(Icons.facebook),
                       heroTag: null,
                     ),
                   ),
                   FloatingActionButton(
-                    backgroundColor: Colors.white,
-                    onPressed: () {},
+                    backgroundColor: Colors.grey[800],
+                    onPressed: () async {
+                      dynamic result = await signInWithGoogle();
+
+                      if (_formKey.currentState!.validate()) {
+                        dynamic result = await signInWithGoogle();
+
+                        if (result != null) {
+                          setState(() {
+                            Navigator.pushReplacement<void, void>(
+                              context,
+                              MaterialPageRoute<void>(
+                                builder: (BuildContext context) => const page(),
+                              ),
+                            );
+                          });
+                        }
+                      }
+                    },
                     child: CircleAvatar(
                       backgroundImage: AssetImage('assets/google.png'),
                     ),
@@ -274,22 +295,31 @@ class _LoginState extends State<Login> {
     }
   }
 
-  // void signIn(String mail, String password) async {
-  //   try {
-  //     final UserCredential userCredential =
-  //         await _auth.signInWithEmailAndPassword(
-  //       email: _emailController.text,
-  //       password: _passwordController.text,
-  //     );
+  Future signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
 
-  //     final User user = userCredential.user!;
-  // ScaffoldMessenger.of(context)
-  //      .showSnackBar(SnackBar(content: Text('Hoşgeldin, ${user.email}')));
-  // } on FirebaseAuthException catch (e) {
-  //   ScaffoldMessenger.of(context)
-  //       .showSnackBar(SnackBar(content: Text(e.code)));
-  // } catch (e) {
-  //   print(e.toString());
-  // }
-  // }
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+      //return await FirebaseAuth.instance.signInWithCredential(credential);
+      final user = await _auth.signInWithCredential(credential);
+      // final UserCredential userCredential =
+      //     await _auth.signInWithCredential(credential);
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Başarıyla giriş yaptınız..')));
+      // final User? user = userCredential.user;
+
+      return user.user!;
+    } on FirebaseAuthException catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(e.code)));
+    } catch (e) {
+      print(e.toString());
+    }
+  }
 }

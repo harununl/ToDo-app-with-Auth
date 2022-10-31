@@ -15,7 +15,7 @@ class _homeState extends State<home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue,
+      backgroundColor: Colors.grey[600],
       body: Container(
         child: Padding(
           padding: EdgeInsets.fromLTRB(30.0, 40.0, 30.0, 0.0),
@@ -57,7 +57,7 @@ class _homeState extends State<home> {
                     Navigator.pushNamed(context, '/login');
                     //Navigator.pop(context, '/');
                   },
-                  color: Colors.white,
+                  color: Colors.grey[800],
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(40)),
                   child: Text(
@@ -65,7 +65,7 @@ class _homeState extends State<home> {
                     style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 16,
-                        color: Colors.blue),
+                        color: Colors.white),
                   ),
                 ),
                 SizedBox(
@@ -77,7 +77,7 @@ class _homeState extends State<home> {
                   onPressed: () {
                     Navigator.pushNamed(context, '/signUp');
                   },
-                  color: Colors.white,
+                  color: Colors.grey[800],
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(40)),
                   child: Text(
@@ -85,7 +85,7 @@ class _homeState extends State<home> {
                     style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 16,
-                        color: Colors.blue),
+                        color: Colors.white),
                   ),
                 ),
               ],

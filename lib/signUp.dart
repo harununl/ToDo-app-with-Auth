@@ -34,8 +34,9 @@ class _signUpState extends State<signUp> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue,
+      backgroundColor: Colors.grey[600],
       appBar: AppBar(
+        backgroundColor: Colors.grey[800],
         elevation: 0,
       ),
       body: Container(
@@ -118,7 +119,7 @@ class _signUpState extends State<signUp> {
                           color: Colors.white,
                         ),
                         suffixIcon: IconButton(
-                          icon: Icon(passwordVisible
+                          icon: Icon(!passwordVisible
                               ? Icons.visibility
                               : Icons.visibility_off),
                           color: Colors.white,
@@ -145,6 +146,11 @@ class _signUpState extends State<signUp> {
                   Container(
                     width: double.infinity,
                     padding: EdgeInsets.symmetric(vertical: 25),
+                    //color: Colors.grey,
+                    // decoration: BoxDecoration(
+                    //   gradient: LinearGradient(
+                    //       colors: [Color.fromARGB(255, 21, 21, 21)]),
+                    // ),
                     child: MaterialButton(
                       minWidth: double.infinity,
                       height: 60,
@@ -167,7 +173,7 @@ class _signUpState extends State<signUp> {
 
                         // _register();
                       },
-                      color: Colors.white,
+                      color: Colors.grey[800],
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(40)),
                       child: Text(
@@ -175,7 +181,8 @@ class _signUpState extends State<signUp> {
                         style: TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 16,
-                            color: Colors.blue),
+                            //backgroundColor: Colors.grey,
+                            color: Colors.white),
                       ),
                     ),
                   ),
